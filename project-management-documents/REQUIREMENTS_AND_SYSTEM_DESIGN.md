@@ -141,7 +141,7 @@ Clean, minimal, and focused interface using a primary color for action buttons a
  - Floating action button for adding workouts
  - Tap to log completed workout
 
-Note: Wireframe for this application included in this folder
+Note: Wireframe for this application included in the project-management-documents folder.
 
 ## 4. Non-Functional Requirements
 
