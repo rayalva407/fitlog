@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "fitlog-temp",
+	"entryPoint": "./app/index.tsx",
     "slug": "fitlog-temp",
     "version": "1.0.0",
     "orientation": "portrait",
