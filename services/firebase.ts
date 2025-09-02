@@ -5,12 +5,12 @@ import { getFirestore } from "firebase/firestore"
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyA7KYFA66HRs2Ziq5x_mLUUA_ynx-0GNGQ",
-  authDomain: "fitlog-759de.firebaseapp.com",
-  projectId: "fitlog-759de",
-  storageBucket: "fitlog-759de.firebasestorage.app",
-  messagingSenderId: "419022306980",
-  appId: "1:419022306980:web:7191c421305aa7306f3031"
+  apiKey: process.env.EXPO_PUBLIC_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_APP_ID 
 };
 
 // Initialize Firebase
