@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { useAppDispatch } from '../../store/hooks';
 import { logIn } from '../../services/auth';
 import { Link } from 'expo-router';
+import { Colors, Layout, Typography } from '../../constants';
+import { Styles } from '../../utils/styles';
+import Button from '@/components/ui/Button';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -29,35 +32,38 @@ export default function LoginScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
+      <View style={styles.form}>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+        />
+        
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+        
+        <Button
+		  variant="primary"
+          onPress={handleLogin}
+          disabled={loading}
+	      style={styles.loginButton}
+        >
+            {loading ? "Logging in..." : "Login"}
+        </Button>
+      </View>
       
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      
-      <Button
-        title={loading ? "Logging in..." : "Login"}
-        onPress={handleLogin}
-        disabled={loading}
-      />
-      
-      <View style={styles.signupContainer}>
-        <Text>Don't have an account? </Text>
-        <Link href="/auth/signup" asChild>
-          <TouchableOpacity>
-            <Text style={styles.signupLink}>Sign Up</Text>
-          </TouchableOpacity>
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Don't have an account? </Text>
+        <Link href="/auth/signup" style={styles.link}>
+          <Text style={styles.linkText}>Sign Up</Text>
         </Link>
       </View>
     </View>
@@ -67,31 +73,50 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: Layout.spacing.md,
+    backgroundColor: Colors.background,
     justifyContent: 'center',
-    padding: 20,
+    alignItems: 'center', // Add this to center horizontally
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    ...Typography.title,
     textAlign: 'center',
+    marginBottom: Layout.spacing.xl,
+  },
+  form: {
+    width: '100%',
+    maxWidth: 300,
+    gap: Layout.spacing.md,
+    alignItems: 'center', // Add this to center form elements
   },
   input: {
-    height: 50,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 15,
-    paddingHorizontal: 15,
+    ...Styles.input,
+    width: '100%', // Ensure inputs take full width of form
+  },
+  loginButton: {
+    marginTop: Layout.spacing.sm,
+    width: '100%', // Make button full width
+  },
+  buttonText: {
+    color: Colors.card,
+    fontWeight: '600',
     fontSize: 16,
   },
-  signupContainer: {
+  footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: Layout.spacing.xl,
   },
-  signupLink: {
-    color: 'blue',
-    fontWeight: 'bold',
+  footerText: {
+    ...Typography.body,
+    color: Colors.textLight,
+  },
+  link: {
+    marginLeft: Layout.spacing.xs,
+  },
+  linkText: {
+    ...Typography.body,
+    color: Colors.primary,
+    fontWeight: '600',
   },
 });
