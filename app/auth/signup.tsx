@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { useAppDispatch } from '../../store/hooks';
 import { signUp } from '../../services/auth';
 import { Link } from 'expo-router';
+import { Colors, Layout, Typography } from '../../constants';
+import { Styles } from '../../utils/styles';
+import Button from '@/components/ui/Button';
 
 export default function SignupScreen() {
   const [email, setEmail] = useState('');
@@ -12,115 +15,134 @@ export default function SignupScreen() {
   const dispatch = useAppDispatch();
 
   const handleSignup = async () => {
-    console.log('Signup button pressed');
-    
     if (!email || !password || !displayName) {
-      console.log('Validation failed: missing fields');
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
     if (password.length < 6) {
-      console.log('Validation failed: password too short');
       Alert.alert('Error', 'Password should be at least 6 characters');
       return;
     }
 
-    console.log('Attempting signup with:', { email, displayName });
     setLoading(true);
+    const result = await dispatch(signUp(email, password, displayName));
+    setLoading(false);
     
-    try {
-      const result = await dispatch(signUp(email, password, displayName));
-      console.log('Signup result:', result);
-      
-      if (!result.success) {
-        Alert.alert('Error', result.error);
-      }
-    } catch (error) {
-      console.error('Signup error:', error);
-      Alert.alert('Error', 'An unexpected error occurred');
-    } finally {
-      setLoading(false);
+    if (!result.success) {
+      Alert.alert('Error', result.error);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create Account</Text>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Full Name"
-        value={displayName}
-        onChangeText={setDisplayName}
-        autoCapitalize="words"
-      />
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      
-      <Button
-        title={loading ? "Creating Account..." : "Sign Up"}
-        onPress={handleSignup}
-        disabled={loading}
-      />
-      
-      <View style={styles.loginContainer}>
-        <Text>Already have an account? </Text>
-        <Link href="/auth/login" asChild>
-          <TouchableOpacity>
-            <Text style={styles.loginLink}>Login</Text>
-          </TouchableOpacity>
-        </Link>
+      <View style={styles.innerContainer}>
+        <Text style={styles.title}>Create Account</Text>
+        
+        <View style={styles.form}>
+          <TextInput
+            style={styles.input}
+            placeholder="Full Name"
+            value={displayName}
+            onChangeText={setDisplayName}
+            autoCapitalize="words"
+          />
+          
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+          
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+          
+          <Button
+			variant="primary"
+            onPress={handleSignup}
+            disabled={loading}
+			style={styles.signupButton}
+          >
+              {loading ? "Creating Account..." : "Sign Up"}
+          </Button>
+        </View>
+        
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Already have an account? </Text>
+          <Link href="/auth/login" style={styles.link}>
+            <Text style={styles.linkText}>Login</Text>
+          </Link>
+        </View>
       </View>
     </View>
   );
 }
 
-// Styles remain the same
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.background,
     justifyContent: 'center',
-    padding: 20,
+    alignItems: 'center',
+    padding: Layout.spacing.md,
+  },
+  innerContainer: {
+    width: '100%',
+    maxWidth: 300,
+    alignItems: 'center',
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    ...Typography.title,
     textAlign: 'center',
+    marginBottom: Layout.spacing.xl,
+    width: '100%',
+  },
+  form: {
+    width: '100%',
+    gap: Layout.spacing.md,
   },
   input: {
-    height: 50,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 15,
-    paddingHorizontal: 15,
+    ...Styles.input,
+    width: '100%',
+  },
+  signupButton: {
+    ...Styles.button,
+    ...Styles.buttonPrimary,
+    marginTop: Layout.spacing.sm,
+    width: '100%',
+  },
+  buttonDisabled: {
+    backgroundColor: Colors.textLight,
+  },
+  buttonText: {
+    color: Colors.card,
+    fontWeight: '600',
     fontSize: 16,
   },
-  loginContainer: {
+  footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: Layout.spacing.xl,
+    width: '100%',
   },
-  loginLink: {
-    color: 'blue',
-    fontWeight: 'bold',
+  footerText: {
+    ...Typography.body,
+    color: Colors.textLight,
+  },
+  link: {
+    marginLeft: Layout.spacing.xs,
+  },
+  linkText: {
+    ...Typography.body,
+    color: Colors.primary,
+    fontWeight: '600',
   },
 });
